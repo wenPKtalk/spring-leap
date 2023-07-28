@@ -1,4 +1,4 @@
-package com.topsion;
+package com.topsion.framework;
 
 public class BeanDefinition {
     private String id;
