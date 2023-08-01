@@ -1,5 +1,8 @@
 package com.topsion.framework;
 
+/**
+ * bean定义
+ */
 public class BeanDefinition {
     private String id;
     private String className;
