@@ -5,10 +5,10 @@ import com.topsion.framework.core.Resource;
 import org.dom4j.Element;
 
 public class XmlBeanDefinitionReader {
-    BeanFactory beanFactory;
+    SimpleBeanFactory simpleBeanFactory;
 
-    public XmlBeanDefinitionReader(BeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
+    public XmlBeanDefinitionReader(SimpleBeanFactory simpleBeanFactory) {
+        this.simpleBeanFactory = simpleBeanFactory;
     }
 
     public void loadBeanDefinitions(Resource resource) {
@@ -17,7 +17,7 @@ public class XmlBeanDefinitionReader {
             String beanId = element.attributeValue("id");
             String className = element.attributeValue("class");
             BeanDefinition beanDefinition = new BeanDefinition(beanId, className);
-            this.beanFactory.registerBean(beanDefinition, null);
+            this.simpleBeanFactory.registerBeanDefinition(beanDefinition);
         }
     }
 }

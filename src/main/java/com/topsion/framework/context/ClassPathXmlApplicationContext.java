@@ -15,7 +15,7 @@ import com.topsion.framework.core.Resource;
  */
 public class ClassPathXmlApplicationContext implements BeanFactory {
 
-    BeanFactory beanFactory;
+    SimpleBeanFactory beanFactory;
 
     public ClassPathXmlApplicationContext(String fileName) {
         Resource resource = new ClassPathXmlResource(fileName);

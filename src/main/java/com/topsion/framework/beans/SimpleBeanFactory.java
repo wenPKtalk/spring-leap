@@ -3,28 +3,24 @@ package com.topsion.framework.beans;
 import com.topsion.framework.BeanDefinition;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class SimpleBeanFactory implements BeanFactory{
-    private List<BeanDefinition> beanDefinitions = new ArrayList<>();
-    private List<String> beanNames = new ArrayList<>();
-    private Map<String, Object> singletons = new HashMap<>();
+public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+    private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap();
+
     @Override
     public Object getBean(String beanName) throws BeansException {
         //尝试获取bean实例
-        Object sigleton = singletons.get(beanName);
+        Object sigleton = this.getSingletonBean(beanName);
         //如果还没创建则根据定义创建实例
         if (sigleton == null) {
-            int i = beanNames.indexOf(beanName);
-            if (i == -1) {
-                throw new BeansException("Can't found bean "+ beanName);
+            BeanDefinition beanDefinition = beanDefinitions.get(beanName);
+            if (Objects.isNull(beanDefinition)) {
+                throw new BeansException("Can't found bean " + beanName);
             }
 
             //获取bean的定义
-            BeanDefinition beanDefinition = beanDefinitions.get(i);
             try {
                 sigleton = Class.forName(beanDefinition.getClassName()).getDeclaredConstructor().newInstance();
             } catch (ClassNotFoundException | InvocationTargetException | InstantiationException |
@@ -32,14 +28,21 @@ public class SimpleBeanFactory implements BeanFactory{
                 throw new RuntimeException(e);
             }
             //注册bean 实例
-            this.singletons.put(beanDefinition.getId(), sigleton);
+            this.registerSingleton(beanDefinition.getId(), sigleton);
         }
         return sigleton;
     }
 
+    public void registerBeanDefinition(BeanDefinition beanDefinition) {
+        this.beanDefinitions.put(beanDefinition.getId(), beanDefinition);
+    }
+
+    public boolean containsBean(String beanName) {
+        return containsSingleton(beanName);
+    }
+
     @Override
     public void registerBean(BeanDefinition beanDefinition, Object obj) {
-        this.beanDefinitions.add(beanDefinition);
-        this.beanNames.add(beanDefinition.getId());
+        this.registerSingleton(beanDefinition.getId(), obj);
     }
 }
