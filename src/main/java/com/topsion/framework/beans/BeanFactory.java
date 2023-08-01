@@ -5,5 +5,5 @@ import com.topsion.framework.BeanDefinition;
 public interface BeanFactory {
     Object getBean(String beanName) throws BeansException;
 
-    void registerBeanDefinition(BeanDefinition beanDefinition);
+    void registerBean(BeanDefinition beanDefinition, Object obj);
 }

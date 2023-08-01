@@ -17,7 +17,7 @@ public class XmlBeanDefinitionReader {
             String beanId = element.attributeValue("id");
             String className = element.attributeValue("class");
             BeanDefinition beanDefinition = new BeanDefinition(beanId, className);
-            this.beanFactory.registerBeanDefinition(beanDefinition);
+            this.beanFactory.registerBean(beanDefinition, null);
         }
     }
 }

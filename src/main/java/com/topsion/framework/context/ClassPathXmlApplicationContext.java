@@ -30,7 +30,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
     }
 
     @Override
-    public void registerBeanDefinition(BeanDefinition beanDefinition) {
-        this.beanFactory.registerBeanDefinition(beanDefinition);
+    public void registerBean(BeanDefinition beanDefinition, Object obj) {
+        this.beanFactory.registerBean(beanDefinition, null);
     }
 }
