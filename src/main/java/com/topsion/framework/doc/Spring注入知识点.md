@@ -5,7 +5,7 @@
 2. Setter 注入是提供了一个 setter 方法，调用 setXXX() 来注入值。
 3. constructor 就是在构造器 / 构造函数里传入参数来进行注入。
 
-### xml配置声明Setter注入
+#### xml配置声明Setter注入
 ```xml
 <beans>
     <bean id="aservice" class="com.minis.test.AServiceImpl">
@@ -27,7 +27,7 @@ public class AServiceImpl {
 }
 ```
 
-### 配置声明构造器注入
+#### 配置声明构造器注入
 
 ```xml
 <beans>
