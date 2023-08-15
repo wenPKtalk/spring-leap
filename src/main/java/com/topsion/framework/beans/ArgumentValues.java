@@ -38,4 +38,11 @@ public class ArgumentValues {
         return this.genericArgumentValues.isEmpty();
     }
 
+    public void addArgumentValues(List<ArgumentValue> arguments) {
+        arguments.forEach(this::addGenericArgumentValue);
+    }
+
+    public ArgumentValue getIndexedArgumentValue(int index) {
+        return this.genericArgumentValues.get(index);
+    }
 }

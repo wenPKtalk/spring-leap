@@ -22,8 +22,8 @@ public class PropertyValues {
         this.propertyValues.add(propertyValue);
     }
 
-    public void addPropertyValue(String name, Object propertyValue) {
-        this.addPropertyValue(new PropertyValue(name, propertyValue));
+    public void addPropertyValue(String type, String name, Object propertyValue) {
+        this.addPropertyValue(new PropertyValue(type, name, propertyValue));
     }
 
     public void removePropertyValue(Object propertyValue) {
@@ -53,5 +53,9 @@ public class PropertyValues {
 
     public boolean isEmpty() {
         return this.propertyValues.isEmpty();
+    }
+
+    public void addAllPropertyValues(List<PropertyValue> pvs) {
+        this.propertyValues.addAll(pvs);
     }
 }
