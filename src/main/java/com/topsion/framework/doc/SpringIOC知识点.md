@@ -1,6 +1,13 @@
+### 什么是IoC
+
+正常开发时，开发者调用一个对象方法时需要自己new出来对象进行调用
+<img src="./png/img.png" alt="image" style="zoom:50%;" />
+
+IoC则是由框架创建对象注入给调用者。
 
 ### Spring三种属性注入的方式
 **Field注入，Setter注入， 构造器（Constructor）注入**
+
 1. Field 注入是指我们给 Bean 里面某个变量赋值。
 2. Setter 注入是提供了一个 setter 方法，调用 setXXX() 来注入值。
 3. constructor 就是在构造器 / 构造函数里传入参数来进行注入。
@@ -58,4 +65,6 @@ public class AServiceImpl {
 > 如果构造器注入满足不了对域的赋值，哪就可以和Setter搭配试用
 
 ### 依赖注入，如何解决循环依赖
+> IoC技术代码核心是通过Java的反射机制调用构造器，以及Setter方法，在调用过程中根据具体类型
+> 把属性值作为一个参数赋值进去。这也是所有框架实现IoC时的思路。**反射技术是IoC容器赖以工作的基础。**
 
