@@ -12,6 +12,7 @@ public class BeanDefinition {
 
     private PropertyValues propertyValues;
     private ArgumentValues constructorArgumentValues;
+    private String[] dependsOnRef;
 
     public BeanDefinition(String id, String className) {
         this.id = id;
@@ -48,5 +49,9 @@ public class BeanDefinition {
 
     public ArgumentValues getConstructorArgumentValues() {
         return constructorArgumentValues;
+    }
+
+    public void setDependsOn(String[] refArray) {
+        this.dependsOnRef = refArray;
     }
 }

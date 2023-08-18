@@ -1,9 +1,11 @@
 ### 什么是IoC
-
-正常开发时，开发者调用一个对象方法时需要自己new出来对象进行调用
 <img src="./png/img.png" alt="image" style="zoom:50%;" />
 
-IoC则是由框架创建对象注入给调用者。
+如图，一个“正常”的调用过程是由调用者创建Bean，进行调用IoC则是由框架创建对象注入给调用者。
+
+### DI(Dependency Injection)和IoC(Inversion of Control)的关系
+
+通过上边概念的理解，那么DI依赖注入和IoC的关系就很好区别了，IoC控制反转是通过DI依赖注入的方式实现的。所以说Matin Fowler 引入了依赖注入（DI）来更名IoC。
 
 ### Spring三种属性注入的方式
 **Field注入，Setter注入， 构造器（Constructor）注入**
@@ -67,4 +69,26 @@ public class AServiceImpl {
 ### 依赖注入，如何解决循环依赖
 > IoC技术代码核心是通过Java的反射机制调用构造器，以及Setter方法，在调用过程中根据具体类型
 > 把属性值作为一个参数赋值进去。这也是所有框架实现IoC时的思路。**反射技术是IoC容器赖以工作的基础。**
+
+如果属性本身是一个Bean，就牵扯到了Bean之间依赖的情况。**如何用Value这样一个简单的值表示某个对象中所有的域**Spring在标签里增加了**ref（引用）属性**记录了需要引用另外一个Bean。如下配置文件：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans>
+    <bean id="basebaseservice" class="com.minis.test.BaseBaseService">
+        <property type="com.minis.test.AServiceImpl" name="as" ref="aservice" />
+    </bean>
+    <bean id="aservice" class="com.minis.test.AServiceImpl">
+        <constructor-arg type="String" name="name" value="abc"/>
+        <constructor-arg type="int" name="level" value="3"/>
+        <property type="String" name="property1" value="Someone says"/>
+        <property type="String" name="property2" value="Hello World!"/>
+        <property type="com.minis.test.BaseService" name="ref1" ref="baseservice"/>
+    </bean>
+    <bean id="baseservice" class="com.minis.test.BaseService">
+        <!--引用了basebaseservice Bean-->
+        <property type="com.minis.test.BaseBaseService" name="bbs" ref="basebaseservice" />
+    </bean>
+</beans>
+```
 
