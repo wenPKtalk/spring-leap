@@ -5,43 +5,64 @@ import com.topsion.framework.BeanDefinition;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
     private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap();
+    private Map<String, Object> earlySingletonObjects;
 
     @Override
     public Object getBean(String beanName) throws BeansException {
         //尝试获取bean实例
-        Object sigleton = this.getSingletonBean(beanName);
+        Object singleton = this.getSingletonBean(beanName);
         //如果还没创建则根据定义创建实例
-        if (sigleton == null) {
-            BeanDefinition beanDefinition = beanDefinitions.get(beanName);
-            if (Objects.isNull(beanDefinition)) {
-                throw new BeansException("Can't found bean " + beanName);
-            }
+        if (singleton == null) {
+            //如果没有实例先尝试从毛坯实例集合中获取
+            singleton = this.earlySingletonObjects.get(beanName);
+            if (singleton == null) {
+                //获取bean的定义
+                BeanDefinition beanDefinition = beanDefinitions.get(beanName);
+                if (Objects.isNull(beanDefinition)) {
+                    throw new BeansException("Can't found bean " + beanName);
+                }
 
-            //获取bean的定义
-            try {
-                sigleton = Class.forName(beanDefinition.getClassName()).getDeclaredConstructor().newInstance();
-            } catch (ClassNotFoundException | InvocationTargetException | InstantiationException |
-                     IllegalAccessException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                singleton = createBean(beanDefinition);
+                //注册bean 实例
+                this.registerSingleton(beanDefinition.getId(), singleton);
+                // 预留beanpostprocessor位置
+                // step 1: postProcessBeforeInitialization
+                // step 2: afterPropertiesSet
+                // step 3: init-method
+                // step 4: postProcessAfterInitialization
             }
-            //注册bean 实例
-            this.registerSingleton(beanDefinition.getId(), sigleton);
         }
-        return sigleton;
+        return singleton;
     }
 
     private Object createBean(BeanDefinition beanDefinition) {
         Class<?> clz;
-        Object obj;
-        Constructor<?> con;
-
+        //创建bean的毛坯实例
+        Object obj = doCreateBean(beanDefinition);
+        //存放到毛胚实例缓存中
+        this.earlySingletonObjects.put(beanDefinition.getId(), obj);
         try {
             clz = Class.forName(beanDefinition.getClassName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        //处理属性
+        handleProperties(beanDefinition, clz, obj);
+        return obj;
+    }
+
+    //doCreateBean创建毛胚实例，仅仅调用构造方法，没有进行属性处理
+    private static Object doCreateBean(BeanDefinition beanDefinition) {
+        Constructor<?> con;
+        Object obj;
+        try {
+            Class<?> clz = Class.forName(beanDefinition.getClassName());
             //处理构造器参数
             ArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
             if (!constructorArgumentValues.isEmpty()) {
@@ -81,10 +102,9 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
                  InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        //处理属性
-        handleProperties(beanDefinition, clz, obj);
         return obj;
     }
+
 
     private void handleProperties(BeanDefinition beanDefinition, Class<?> clz, Object obj) {
         PropertyValues propertyValues = beanDefinition.getPropertyValues();

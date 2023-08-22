@@ -66,7 +66,7 @@ public class AServiceImpl {
 > 注入操作的本质，就是给Bean的各个属性进行赋值，具体方式取决于实际情况，哪一种更加便捷就选择哪一种，
 > 如果构造器注入满足不了对域的赋值，哪就可以和Setter搭配试用
 
-### 依赖注入，如何解决循环依赖
+### 依赖注入
 > IoC技术代码核心是通过Java的反射机制调用构造器，以及Setter方法，在调用过程中根据具体类型
 > 把属性值作为一个参数赋值进去。这也是所有框架实现IoC时的思路。**反射技术是IoC容器赖以工作的基础。**
 
@@ -92,3 +92,20 @@ public class AServiceImpl {
 </beans>
 ```
 
+### 循环依赖
+如图
+
+<img src="https://cdn.jsdelivr.net/gh/wenPKtalk/pictures@master/blog/20230822/23_08/image-20230822230804126.png" alt="image-20230822230804126" style="zoom:50%;" />
+
+引入了一个**earlySingletonObjects**用来存放毛坯实例（属性未被赋值的实例）。在注入引用属性过程时从earlySingletonObjects先找到毛坯实例注入进去。
+
+代码反应在：getBean(),createBean()和doCreateBean()中。
+
+> createBean() 方法中调用了一个 doCreateBean(bd) 方法，
+> 专门负责创建早期的毛胚实例。
+> 毛胚实例创建好后会放在 earlySingletonObjects 结构中，
+> 然后 createBean() 方法再调用 handleProperties() 补齐这些 property 的值。
+> 在 getBean() 方法中，首先要判断有没有已经创建好的 bean，有的话直接取出来，如果没有就检查 earlySingletonObjects 中有没有相应的毛胚 Bean，有的话直接取出来，没有的话就去创建，并且会根据 Bean 之间的依赖关系把相关的 Bean 全部创建好。
+> 很多资料把这个过程叫做 bean 的“三级缓存”，
+> 这个术语来自于 Spring 源代码中的程序注释。实际上我们弄清楚了这个 getBean() 的过程后就会知道这段注释并不是很恰当。
+> 只不过这是 Spring 发明人自己写下的注释，大家也都这么称呼而已。
