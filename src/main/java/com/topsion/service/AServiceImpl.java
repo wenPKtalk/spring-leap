@@ -6,6 +6,8 @@ public class AServiceImpl implements AService{
     private String property1;
     private String property2;
 
+    private BService ref1;
+
     public AServiceImpl() {
     }
 
