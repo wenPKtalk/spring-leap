@@ -1,0 +1,79 @@
+---
+modelFingerprint: "DE4C2C31AD5DC01B652533D22ECE705B"
+methods:
+- method:
+    name: "sayHello"
+    returnType: "void"
+    signature: "sayHello() : void"
+    instructionFingerprint: "5460D207C49F8487CCFF5800C65AD856"
+    parametersTypes: []
+  paths:
+  - pathId: "path1"
+    pathIdForUser: "path1"
+    testPathName: "sayHelloTest"
+    nameDefinedByUser: false
+    constructorSignature: "<init>(java.lang.String,int) : void"
+    priorityDefinedByUser: false
+    filledByUser: false
+    priority: "LOW"
+    modelFingerprint: "3F5E51C67498746E408ADD635C9CEFB3"
+    problemWasSolvedByProver: false
+    truncated: false
+    inputParameters:
+    - type: "CONSTRUCTOR"
+      modelFingerprint: "E5FAB54035BE83DB06A430F92CBC5B8E"
+      index: 1
+      ignored: false
+      nestedInLoop: false
+      nestedInRecursion: false
+      value:
+        sapientType: "OBJECT"
+        content: !<new>
+          target: "com.topsion.service.AServiceImpl"
+          parameters:
+          - name: "name"
+            value:
+              sapientType: "BASIC"
+              content: !<regular>
+                value: "name1"
+              valueType: "java.lang.String"
+              uuid: "<init>_string1"
+              fixed: false
+              equalsMethodPresent: false
+              explicitCastNeeded: false
+          - name: "level"
+            value:
+              sapientType: "BASIC"
+              content: !<regular>
+                value: 0
+              valueType: "int"
+              uuid: "<init>_int1"
+              fixed: false
+              equalsMethodPresent: false
+              explicitCastNeeded: false
+          privateConstructor: false
+        valueType: "com.topsion.service.AServiceImpl"
+        uuid: "target"
+        fixed: false
+        equalsMethodPresent: false
+        explicitCastNeeded: false
+      staticReadMethodForField: false
+      filledByUser: false
+    - type: "RESULT"
+      name: "result"
+      modelFingerprint: "CAB8111FD0B710A336C898E539090E34"
+      index: 2
+      ignored: false
+      nestedInLoop: false
+      nestedInRecursion: false
+      value:
+        sapientType: "VOID"
+        fixed: true
+        equalsMethodPresent: false
+        explicitCastNeeded: false
+      staticReadMethodForField: false
+      filledByUser: false
+    uuid: "f6af188f-5d9d-3244-83f7-cfc8c16873f9"
+    deleted: false
+    disabled: false
+    ignoredBySystem: false
