@@ -109,3 +109,8 @@ public class AServiceImpl {
 > 很多资料把这个过程叫做 bean 的“三级缓存”，
 > 这个术语来自于 Spring 源代码中的程序注释。实际上我们弄清楚了这个 getBean() 的过程后就会知道这段注释并不是很恰当。
 > 只不过这是 Spring 发明人自己写下的注释，大家也都这么称呼而已。
+
+#### 包装方法refresh()
+
+在spring中，Bean是结合在一起同时创建完毕的，为了减少内部复杂性，Spring对外提供了一个包装方法**refresh()**。该方法对所有的Bean调用了一次getBean(),利用getBean()方法中的createBean()创建Bean的实例，这样就可以只用一个方法把容器中所有的Bean的实例创建出来。
+

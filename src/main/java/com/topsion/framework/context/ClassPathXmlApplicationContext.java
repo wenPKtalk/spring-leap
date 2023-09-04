@@ -15,13 +15,18 @@ import com.topsion.framework.core.Resource;
  */
 public class ClassPathXmlApplicationContext implements BeanFactory {
 
+    private final boolean isRefresh;
     SimpleBeanFactory beanFactory;
 
-    public ClassPathXmlApplicationContext(String fileName) {
+    public ClassPathXmlApplicationContext(String fileName, boolean isRefresh) {
+        this.isRefresh = isRefresh;
         Resource resource = new ClassPathXmlResource(fileName);
         this.beanFactory = new SimpleBeanFactory();
         XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
         xmlBeanDefinitionReader.loadBeanDefinitions(resource);
+        if (this.isRefresh) {
+            this.beanFactory.refresh();
+        }
     }
 
     @Override

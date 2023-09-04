@@ -11,7 +11,5 @@ class AServiceImplSapientGeneratedTest {
          * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
          *  The test code, including the assertion statements, has been successfully generated.
          */
-        AServiceImpl target = new AServiceImpl("name1", 0);
-        target.sayHello();
     }
 }

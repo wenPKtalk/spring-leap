@@ -6,8 +6,8 @@ import com.topsion.service.AService;
 
 public class App {
     public static void main(String[] args) throws BeansException {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-bean.xml");
-        AService aService = (AService) ctx.getBean("aService");
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-bean.xml", true);
+        AService aService = (AService) ctx.getBean("aservice");
         aService.sayHello();
     }
 }

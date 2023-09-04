@@ -1,25 +1,31 @@
 package com.topsion.service;
 
-public class AServiceImpl implements AService{
+public class AServiceImpl implements AService {
     private String name;
     private int level;
     private String property1;
     private String property2;
-
-    private BService ref1;
-
-    public AServiceImpl() {
-    }
+    private BaseService ref1;
 
     public AServiceImpl(String name, int level) {
         this.name = name;
         this.level = level;
-        System.out.println(this.name + "," + this.level);
     }
 
-    @Override
-    public void sayHello() {
-        System.out.println("Hello spring IoC");
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public String getProperty1() {
@@ -36,5 +42,18 @@ public class AServiceImpl implements AService{
 
     public void setProperty2(String property2) {
         this.property2 = property2;
+    }
+
+    public BaseService getRef1() {
+        return ref1;
+    }
+
+    public void setRef1(BaseService ref1) {
+        this.ref1 = ref1;
+    }
+
+    @Override
+    public void sayHello() {
+        System.out.println("say hello ioc" + this.level + this.name + this.property1 + this.property2 + this.ref1);
     }
 }

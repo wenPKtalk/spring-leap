@@ -7,11 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
     private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap();
-    private Map<String, Object> earlySingletonObjects;
+    private Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
 
     @Override
     public Object getBean(String beanName) throws BeansException {
@@ -148,7 +149,7 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
                 String setterMethodName = getSetterMethodName(name);
                 Method method = null;
                 try {
-                    clz.getMethod(setterMethodName, paramTypes);
+                    method = clz.getMethod(setterMethodName, paramTypes);
                 } catch (NoSuchMethodException e) {
                     throw new RuntimeException(e);
                 }
@@ -160,6 +161,18 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
                 }
             }
         }
+    }
+
+    public void refresh() {
+        Set<Map.Entry<String, BeanDefinition>> entries = beanDefinitions.entrySet();
+        for (Map.Entry<String, BeanDefinition> entry : entries) {
+            try {
+                getBean(entry.getKey());
+            } catch (BeansException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
     private String getSetterMethodName(String name) {
