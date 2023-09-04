@@ -1,6 +1,10 @@
 package com.topsion.framework.beans;
 
-import com.topsion.framework.BeanDefinition;
+import com.topsion.framework.beans.factory.config.BeanDefinition;
+import com.topsion.framework.beans.factory.BeanFactory;
+import com.topsion.framework.beans.factory.config.ConstructorArgumentValue;
+import com.topsion.framework.beans.factory.config.ConstructorArgumentValues;
+import com.topsion.framework.beans.factory.support.DefaultSingletonBeanRegistry;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -65,26 +69,26 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
         try {
             Class<?> clz = Class.forName(beanDefinition.getClassName());
             //处理构造器参数
-            ArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
+            ConstructorArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
             if (!constructorArgumentValues.isEmpty()) {
                 Class<?>[] paramTypes = new Class<?>[constructorArgumentValues.getArgumentCount()];
                 Object[] paramValues = new Object[constructorArgumentValues.getArgumentCount()];
                 for (int i = 0; i < constructorArgumentValues.getArgumentCount(); i++) {
-                    ArgumentValue argumentValue = constructorArgumentValues.getIndexedArgumentValue(i);
-                    if ("String".equals(argumentValue.getType()) || "java.lang.String".equals(argumentValue.getType())) {
+                    ConstructorArgumentValue constructorArgumentValue = constructorArgumentValues.getIndexedArgumentValue(i);
+                    if ("String".equals(constructorArgumentValue.getType()) || "java.lang.String".equals(constructorArgumentValue.getType())) {
                         paramTypes[i] = String.class;
-                        paramValues[i] = argumentValue.getValue();
+                        paramValues[i] = constructorArgumentValue.getValue();
                     }
-                    if ("Integer".equals(argumentValue.getType()) || "java.lang.Integer".equals(argumentValue.getType())) {
+                    if ("Integer".equals(constructorArgumentValue.getType()) || "java.lang.Integer".equals(constructorArgumentValue.getType())) {
                         paramTypes[i] = Integer.class;
-                        paramValues[i] = Integer.valueOf((String) argumentValue.getValue());
+                        paramValues[i] = Integer.valueOf((String) constructorArgumentValue.getValue());
                     }
-                    if ("int".equals(argumentValue.getType())) {
+                    if ("int".equals(constructorArgumentValue.getType())) {
                         paramTypes[i] = int.class;
-                        paramValues[i] = Integer.valueOf((String) argumentValue.getValue());
+                        paramValues[i] = Integer.valueOf((String) constructorArgumentValue.getValue());
                     } else { //默认为string
                         paramTypes[i] = String.class;
-                        paramValues[i] = argumentValue.getValue();
+                        paramValues[i] = constructorArgumentValue.getValue();
                     }
                 }
                 try {

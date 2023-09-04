@@ -1,10 +1,10 @@
 package com.topsion.framework.context;
 
-import com.topsion.framework.BeanDefinition;
-import com.topsion.framework.beans.BeanFactory;
+import com.topsion.framework.beans.factory.config.BeanDefinition;
+import com.topsion.framework.beans.factory.BeanFactory;
 import com.topsion.framework.beans.BeansException;
 import com.topsion.framework.beans.SimpleBeanFactory;
-import com.topsion.framework.beans.XmlBeanDefinitionReader;
+import com.topsion.framework.beans.factory.xml.XmlBeanDefinitionReader;
 import com.topsion.framework.core.ClassPathXmlResource;
 import com.topsion.framework.core.Resource;
 

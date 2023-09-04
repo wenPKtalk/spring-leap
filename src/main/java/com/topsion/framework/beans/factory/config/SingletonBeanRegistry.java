@@ -1,4 +1,4 @@
-package com.topsion.framework.beans;
+package com.topsion.framework.beans.factory.config;
 
 /**
  * 类的名称上带有 Registry 字样，

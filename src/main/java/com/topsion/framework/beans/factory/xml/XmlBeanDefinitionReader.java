@@ -1,6 +1,9 @@
-package com.topsion.framework.beans;
+package com.topsion.framework.beans.factory.xml;
 
-import com.topsion.framework.BeanDefinition;
+import com.topsion.framework.beans.factory.config.BeanDefinition;
+import com.topsion.framework.beans.*;
+import com.topsion.framework.beans.factory.config.ConstructorArgumentValue;
+import com.topsion.framework.beans.factory.config.ConstructorArgumentValues;
 import com.topsion.framework.core.Resource;
 import org.dom4j.Element;
 
@@ -49,20 +52,20 @@ public class XmlBeanDefinitionReader {
 
             //构造器属性
             List<Element> constructorArgElements = element.elements("constructor-arg");
-            ArgumentValues argumentValues = new ArgumentValues();
-            List<ArgumentValue> arguments = createArgumentValues(constructorArgElements);
-            argumentValues.addArgumentValues(arguments);
-            beanDefinition.setConstructorArguments(argumentValues);
+            ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues();
+            List<ConstructorArgumentValue> arguments = createArgumentValues(constructorArgElements);
+            constructorArgumentValues.addArgumentValues(arguments);
+            beanDefinition.setConstructorArguments(constructorArgumentValues);
             this.simpleBeanFactory.registerBeanDefinition(beanDefinition);
         }
     }
 
-    private List<ArgumentValue> createArgumentValues(List<Element> constructorArgElements) {
-        List<ArgumentValue> arguments = constructorArgElements.stream().map(ce -> {
+    private List<ConstructorArgumentValue> createArgumentValues(List<Element> constructorArgElements) {
+        List<ConstructorArgumentValue> arguments = constructorArgElements.stream().map(ce -> {
             String pType = ce.attributeValue("type");
             String pName = ce.attributeValue("name");
             String pValue = ce.attributeValue("value");
-            return new ArgumentValue(pValue, pType, pName);
+            return new ConstructorArgumentValue(pValue, pType, pName);
         }).toList();
         return arguments;
     }

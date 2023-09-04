@@ -114,3 +114,22 @@ public class AServiceImpl {
 
 在spring中，Bean是结合在一起同时创建完毕的，为了减少内部复杂性，Spring对外提供了一个包装方法**refresh()**。该方法对所有的Bean调用了一次getBean(),利用getBean()方法中的createBean()创建Bean的实例，这样就可以只用一个方法把容器中所有的Bean的实例创建出来。
 
+### Autowired注解
+
+利用注解如下，不再需要显示的在xml中试用ref属性。那么Spring会在什么时机去解释这这一注解呢？
+
+```java
+public class Test {
+  @Autowired
+  private Aservice aservice;
+}
+```
+
+Autowired注解是作用在一个实例变量上的，为了生效，首先必须创建好这个对象，也就是在**createBean()**方法之后
+
+```refresh()```方法包装了创建Bean的整个过程，```refresh()```方法预留postProcessBeforeInitialization,init-method与postProcessAfterInitialization的位置，分别对应初始化前，中，后分别对Bean的处理。这里就是解释注解Autowired注解的最佳位置。
+
+
+
+
+

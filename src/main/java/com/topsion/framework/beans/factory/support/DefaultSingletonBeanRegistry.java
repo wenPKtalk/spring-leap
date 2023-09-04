@@ -1,4 +1,6 @@
-package com.topsion.framework.beans;
+package com.topsion.framework.beans.factory.support;
+
+import com.topsion.framework.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.ArrayList;
 import java.util.List;

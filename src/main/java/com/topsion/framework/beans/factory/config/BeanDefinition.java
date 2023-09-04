@@ -1,6 +1,6 @@
-package com.topsion.framework;
+package com.topsion.framework.beans.factory.config;
 
-import com.topsion.framework.beans.ArgumentValues;
+import com.topsion.framework.beans.factory.config.ConstructorArgumentValues;
 import com.topsion.framework.beans.PropertyValues;
 
 /**
@@ -11,7 +11,7 @@ public class BeanDefinition {
     private String className;
 
     private PropertyValues propertyValues;
-    private ArgumentValues constructorArgumentValues;
+    private ConstructorArgumentValues constructorArgumentValues;
     private String[] dependsOnRef;
 
     public BeanDefinition(String id, String className) {
@@ -39,7 +39,7 @@ public class BeanDefinition {
         this.propertyValues = propertyValues;
     }
 
-    public void setConstructorArguments(ArgumentValues arguments) {
+    public void setConstructorArguments(ConstructorArgumentValues arguments) {
         this.constructorArgumentValues = arguments;
     }
 
@@ -47,7 +47,7 @@ public class BeanDefinition {
         return propertyValues;
     }
 
-    public ArgumentValues getConstructorArgumentValues() {
+    public ConstructorArgumentValues getConstructorArgumentValues() {
         return constructorArgumentValues;
     }
 

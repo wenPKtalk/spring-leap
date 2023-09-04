@@ -1,6 +1,7 @@
-package com.topsion.framework.beans;
+package com.topsion.framework.beans.factory;
 
-import com.topsion.framework.BeanDefinition;
+import com.topsion.framework.beans.factory.config.BeanDefinition;
+import com.topsion.framework.beans.BeansException;
 
 public interface BeanFactory {
     Object getBean(String beanName) throws BeansException;
