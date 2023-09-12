@@ -54,4 +54,20 @@ public class BeanDefinition {
     public void setDependsOn(String[] refArray) {
         this.dependsOnRef = refArray;
     }
+
+    public String getInitMethodName() {
+        return null;
+    }
+
+    public boolean isPrototype() {
+        return false;
+    }
+
+    public boolean isSingleton() {
+        return false;
+    }
+
+    public boolean isLazyInit() {
+        return false;
+    }
 }

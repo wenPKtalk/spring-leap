@@ -15,7 +15,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, SingletonBeanRegistry {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
+        implements BeanFactory, SingletonBeanRegistry {
 
     private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap();
     private Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
@@ -55,14 +56,33 @@ public class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements
                 this.registerSingleton(beanDefinition.getId(), singleton);
                 // 预留beanpostprocessor位置
                 // step 1: postProcessBeforeInitialization
+                applyBeanPostProcessorBeforeInitialization(singleton, beanName);
                 // step 2: afterPropertiesSet
                 // step 3: init-method
+                if (beanDefinition.getInitMethodName() != null && !beanDefinition.equals("")) {
+                    invokeInitMethod(beanDefinition, singleton);
+                }
                 // step 4: postProcessAfterInitialization
+                applyBeanPostProcessorAfterInitialization(singleton, beanName);
             }
         }
         return singleton;
 
     }
+
+    private void invokeInitMethod(BeanDefinition beanDefinition, Object obj) {
+        Class<?> clz = beanDefinition.getClass();
+        try {
+            Method method = clz.getMethod(beanDefinition.getInitMethodName());
+            method.invoke(obj);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    abstract public Object applyBeanPostProcessorAfterInitialization(Object singleton, String beanName) throws BeansException;
+
+    abstract public Object applyBeanPostProcessorBeforeInitialization(Object singleton, String beanName);
 
     private Object createBean(BeanDefinition beanDefinition) {
         Class<?> clz;
@@ -188,8 +208,64 @@ public class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements
         return "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
+
+    public void registerBean(String beanName, Object obj) {
+        this.registerSingleton(beanName, obj);
+    }
+
     @Override
-    public void registerBean(BeanDefinition beanDefinition, Object obj) {
+    public boolean containsBean(String beanName) {
+        return super.containsSingleton(beanName);
+    }
+
+    @Override
+    public void registerBeanDefinition(String name, BeanDefinition beanDefinition) {
+        this.beanDefinitions.put(name, beanDefinition);
+        this.beanDefinitionNames.add(name);
+        if (!beanDefinition.isLazyInit()) {
+            try {
+                getBean(name);
+            } catch (BeansException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public void removeBeanDefinition(String name) {
+        this.beanDefinitions.remove(name);
+        this.beanDefinitionNames.remove(name);
+        this.removeSingleton(name);
+    }
+
+    private void removeSingleton(String name) {
 
     }
+
+    @Override
+    public BeanDefinition getBeanDefinition(String name) {
+        return this.beanDefinitions.get(name);
+    }
+
+    @Override
+    public boolean containsBeanDefinition(String name) {
+        return this.beanDefinitions.containsKey(name);
+    }
+
+    @Override
+    public boolean isSingleton(String name) {
+        return this.beanDefinitions.get(name).isSingleton();
+    }
+
+    @Override
+    public boolean isPrototype(String name) {
+        return this.beanDefinitions.get(name).isPrototype();
+
+    }
+
+    @Override
+    public Class getType(String name) {
+        return this.beanDefinitions.get(name).getClass();
+    }
+
 }

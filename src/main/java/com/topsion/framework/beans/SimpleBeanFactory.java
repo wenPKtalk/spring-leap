@@ -183,6 +183,7 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
         return "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
+    @Override
     public void registerBeanDefinition(BeanDefinition beanDefinition) {
         this.beanDefinitions.put(beanDefinition.getId(), beanDefinition);
     }

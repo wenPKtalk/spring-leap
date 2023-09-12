@@ -1,5 +1,6 @@
 package com.topsion.framework.context;
 
+import com.topsion.framework.beans.factory.annotation.AutowiredCapableBeanFactory;
 import com.topsion.framework.beans.factory.config.BeanDefinition;
 import com.topsion.framework.beans.factory.BeanFactory;
 import com.topsion.framework.beans.BeansException;
@@ -7,6 +8,8 @@ import com.topsion.framework.beans.SimpleBeanFactory;
 import com.topsion.framework.beans.factory.xml.XmlBeanDefinitionReader;
 import com.topsion.framework.core.ClassPathXmlResource;
 import com.topsion.framework.core.Resource;
+
+import java.util.List;
 
 /**
  * 1. 解析 XML 文件中的内容。
@@ -21,7 +24,8 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
     public ClassPathXmlApplicationContext(String fileName, boolean isRefresh) {
         this.isRefresh = isRefresh;
         Resource resource = new ClassPathXmlResource(fileName);
-        this.beanFactory = new SimpleBeanFactory();
+        AutowiredCapableBeanFactory autowiredCapableBeanFactory = new AutowiredCapableBeanFactory();
+//        this.beanFactory = new SimpleBeanFactory();
         XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
         xmlBeanDefinitionReader.loadBeanDefinitions(resource);
         if (this.isRefresh) {
@@ -37,5 +41,16 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
     @Override
     public void registerBean(BeanDefinition beanDefinition, Object obj) {
         this.beanFactory.registerBean(beanDefinition, null);
+    }
+
+    public List getBeanFactoryPostProcessors() {
+        return this.beanFactoryPostProcessors;
+    }
+
+    public void addBeanFactoryPostProcessor(BeanFactoryPostProcessor postProcessor) {
+        this.beanFactoryPostProcessors.add(postProcessor);
+    }
+
+    public void refresh() throws BeansException, IllegalStateException { // Register bean processors that intercept bean creation. registerBeanPostProcessors(this.beanFactory); // Initialize other special beans in specific context subclasses. onRefresh(); } private void registerBeanPostProcessors(AutowireCapableBeanFactory beanFactory) { beanFactory.addBeanPostProcessor(new AutowiredAnnotationBeanPostProcessor()); } private void onRefresh() { this.beanFactory.refresh(); }
     }
 }
