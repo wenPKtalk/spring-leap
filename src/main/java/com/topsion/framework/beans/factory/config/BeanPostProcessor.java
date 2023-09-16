@@ -1,6 +1,7 @@
-package com.topsion.framework.beans.factory.annotation;
+package com.topsion.framework.beans.factory.config;
 
 import com.topsion.framework.beans.BeansException;
+import com.topsion.framework.beans.factory.BeanFactory;
 
 public interface BeanPostProcessor {
     /**
@@ -18,6 +19,8 @@ public interface BeanPostProcessor {
      * @return
      */
     Object postProcessAfterInitialization(Object bean, String beanName);
+
+    void setBeanFactory(BeanFactory beanFactory);
 
 
 }

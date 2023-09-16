@@ -1,6 +1,6 @@
 package com.topsion.framework.context;
 
-import com.topsion.framework.beans.factory.annotation.AutowiredCapableBeanFactory;
+import com.topsion.framework.beans.factory.config.AutowiredCapableBeanFactory;
 import com.topsion.framework.beans.factory.config.BeanDefinition;
 import com.topsion.framework.beans.factory.BeanFactory;
 import com.topsion.framework.beans.BeansException;

@@ -1,9 +1,8 @@
-package com.topsion.framework.beans.factory.annotation;
+package com.topsion.framework.beans.factory.config;
 
 import com.topsion.framework.beans.BeansException;
-import com.topsion.framework.beans.factory.AbstractBeanFactory;
-import com.topsion.framework.beans.factory.BeanFactory;
-import com.topsion.framework.beans.factory.config.BeanDefinition;
+import com.topsion.framework.beans.factory.support.AbstractBeanFactory;
+import com.topsion.framework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +49,5 @@ public class AutowiredCapableBeanFactory extends AbstractBeanFactory {
 
         }
         return result;
-    }
-
-    @Override
-    public void registerBean(BeanDefinition beanDefinition, Object obj) {
-
-    }
-
-    @Override
-    public void registerBeanDefinition(BeanDefinition beanDefinition) {
-
     }
 }

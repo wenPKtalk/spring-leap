@@ -3,9 +3,7 @@ package com.topsion.framework.beans.factory.support;
 import com.topsion.framework.beans.factory.config.BeanDefinition;
 import com.topsion.framework.beans.factory.config.SingletonBeanRegistry;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -15,47 +13,90 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
-    protected List<String> beanNames = new ArrayList<>();
-    protected final Map<String, Object> singletons = new ConcurrentHashMap<>();
-
+    protected List<String> beanNames=new ArrayList<>();
+    protected Map<String, Object> singletonObjects =new ConcurrentHashMap<>(256);
+    protected Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
+    protected Map<String,Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 
     @Override
+    public void registerSingleton(String beanName, Object singletonObject) {
+        synchronized(this.singletonObjects) {
+            Object oldObject = this.singletonObjects.get(beanName);
+            if (oldObject != null) {
+                throw new IllegalStateException("Could not register object [" + singletonObject +
+                        "] under bean name '" + beanName + "': there is already object [" + oldObject + "] bound");
+            }
 
-    public void registerSingleton(String beanName, Object obj) {
-        synchronized (this.singletons) {
-            this.singletons.put(beanName, obj);
+            this.singletonObjects.put(beanName, singletonObject);
             this.beanNames.add(beanName);
+            System.out.println(" bean registerded............. " + beanName);
         }
     }
 
     @Override
     public Object getSingletonBean(String beanName) {
-        return this.singletons.get(beanName);
+        return this.singletonObjects.get(beanName);
     }
 
     @Override
     public boolean containsSingleton(String beanName) {
-        return this.singletons.containsKey(beanName);
+        return this.singletonObjects.containsKey(beanName);
     }
 
     @Override
     public String[] getSingletonNames() {
-        return this.beanNames.toArray(new String[0]);
+        return (String[]) this.beanNames.toArray();
     }
 
-    public abstract void registerBeanDefinition(BeanDefinition beanDefinition);
+    protected void removeSingleton(String beanName) {
+        synchronized (this.singletonObjects) {
+            this.singletonObjects.remove(beanName);
+            this.beanNames.remove(beanName);
+        }
+    }
 
-    public abstract boolean containsBeanDefinition(String name);
+    protected void registerDependentBean(String beanName, String dependentBeanName) {
+        Set<String> dependentBeans = this.dependentBeanMap.get(beanName);
+        if (dependentBeans != null && dependentBeans.contains(dependentBeanName)) {
+            return;
+        }
 
-    public abstract boolean isPrototype(String name);
+        // No entry yet -> fully synchronized manipulation of the dependentBeans Set
+        synchronized (this.dependentBeanMap) {
+            dependentBeans = this.dependentBeanMap.get(beanName);
+            if (dependentBeans == null) {
+                dependentBeans = new LinkedHashSet<String>(8);
+                this.dependentBeanMap.put(beanName, dependentBeans);
+            }
+            dependentBeans.add(dependentBeanName);
+        }
+        synchronized (this.dependenciesForBeanMap) {
+            Set<String> dependenciesForBean = this.dependenciesForBeanMap.get(dependentBeanName);
+            if (dependenciesForBean == null) {
+                dependenciesForBean = new LinkedHashSet<String>(8);
+                this.dependenciesForBeanMap.put(dependentBeanName, dependenciesForBean);
+            }
+            dependenciesForBean.add(beanName);
+        }
 
-    public abstract boolean containsBean(String beanName);
+    }
 
-    public abstract void registerBeanDefinition(String name, BeanDefinition beanDefinition);
+    protected boolean hasDependentBean(String beanName) {
+        return this.dependentBeanMap.containsKey(beanName);
+    }
+    protected String[] getDependentBeans(String beanName) {
+        Set<String> dependentBeans = this.dependentBeanMap.get(beanName);
+        if (dependentBeans == null) {
+            return new String[0];
+        }
+        return (String[]) dependentBeans.toArray();
+    }
+    protected String[] getDependenciesForBean(String beanName) {
+        Set<String> dependenciesForBean = this.dependenciesForBeanMap.get(beanName);
+        if (dependenciesForBean == null) {
+            return new String[0];
+        }
+        return (String[]) dependenciesForBean.toArray();
 
-    public abstract BeanDefinition getBeanDefinition(String name);
-
-    public abstract boolean isSingleton(String name);
-
-    public abstract Class getType(String name);
+    }
 }

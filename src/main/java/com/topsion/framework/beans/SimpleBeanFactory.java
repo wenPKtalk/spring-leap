@@ -2,6 +2,7 @@ package com.topsion.framework.beans;
 
 import com.topsion.framework.beans.factory.config.BeanDefinition;
 import com.topsion.framework.beans.factory.BeanFactory;
+import com.topsion.framework.beans.factory.support.BeanDefinitionRegistry;
 import com.topsion.framework.beans.factory.config.ConstructorArgumentValue;
 import com.topsion.framework.beans.factory.config.ConstructorArgumentValues;
 import com.topsion.framework.beans.factory.support.DefaultSingletonBeanRegistry;
@@ -14,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
     private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap();
     private Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
 
@@ -184,10 +185,6 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
     }
 
     @Override
-    public void registerBeanDefinition(BeanDefinition beanDefinition) {
-        this.beanDefinitions.put(beanDefinition.getId(), beanDefinition);
-    }
-
     public boolean containsBean(String beanName) {
         return containsSingleton(beanName);
     }
@@ -195,5 +192,59 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
     @Override
     public void registerBean(BeanDefinition beanDefinition, Object obj) {
         this.registerSingleton(beanDefinition.getId(), obj);
+    }
+
+
+    @Override
+    public BeanDefinition getBeanDefinition(String name) {
+        return this.beanDefinitions.get(name);
+    }
+
+    @Override
+    public boolean containsBeanDefinition(String name) {
+        return this.beanDefinitions.containsKey(name);
+    }
+
+    @Override
+    public boolean isSingleton(String name) {
+        return this.beanDefinitions.get(name).isSingleton();
+    }
+
+    @Override
+    public boolean isPrototype(String name) {
+        return this.beanDefinitions.get(name).isPrototype();
+    }
+
+    @Override
+    public Class<?> getType(String name) {
+        return this.beanDefinitions.get(name).getClass();
+    }
+
+
+    @Override
+    public void registerBeanDefinition(String name, BeanDefinition bd) {
+        this.beanDefinitions.put(name, bd);
+        this.beanNames.add(name);
+        if (!bd.isLazyInit()) {
+            try {
+                getBean(name);
+            } catch (BeansException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Override
+    public Object getSingletonBean(String beanName) {
+        return this.singletonObjects.get(beanName);
+    }
+
+    @Override
+    public void removeBeanDefinition(String name) {
+        this.beanDefinitions.remove(name);
+        this.beanNames.remove(name);
+        this.removeSingleton(name);
     }
 }

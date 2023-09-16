@@ -1,11 +1,13 @@
 package com.topsion.framework.beans.factory.annotation;
 
 import com.topsion.framework.beans.BeansException;
+import com.topsion.framework.beans.factory.BeanFactory;
+import com.topsion.framework.beans.factory.config.BeanPostProcessor;
 
 import java.lang.reflect.Field;
 
-public class AutowiredAnnotationBeanPostProcessor implements BeanPostProcessor{
-    private AutowiredCapableBeanFactory beanFactory;
+public class AutowiredAnnotationBeanPostProcessor implements BeanPostProcessor {
+    private BeanFactory beanFactory;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -44,11 +46,12 @@ public class AutowiredAnnotationBeanPostProcessor implements BeanPostProcessor{
     }
 
 
-    public AutowiredCapableBeanFactory getBeanFactory() {
+    public BeanFactory getBeanFactory() {
         return beanFactory;
     }
 
-    public void setBeanFactory(AutowiredCapableBeanFactory beanFactory) {
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 }

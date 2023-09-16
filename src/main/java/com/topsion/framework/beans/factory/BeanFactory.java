@@ -13,5 +13,17 @@ public interface BeanFactory {
      *            指代与 beanName 对应的 Bean 的信息。
      *            你可以看下修改后的 BeanFactory。
      */
-    void registerBean(BeanDefinition beanDefinition, Object obj);
+//    void registerBean(BeanDefinition beanDefinition, Object obj);
+
+    /*boolean containsBean(String name);
+    boolean isSingleton(String name);
+    boolean isPrototype(String name);
+    Class<?> getType(String name);*/
+
+    boolean containsBean(String name);
+    //void registerBean(String beanName, Object obj);
+    boolean isSingleton(String name);
+    boolean isPrototype(String name);
+    Class<?> getType(String name);
+
 }

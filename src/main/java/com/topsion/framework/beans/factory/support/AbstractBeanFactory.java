@@ -1,13 +1,10 @@
-package com.topsion.framework.beans.factory;
+package com.topsion.framework.beans.factory.support;
 
 import com.topsion.framework.beans.BeansException;
 import com.topsion.framework.beans.PropertyValue;
 import com.topsion.framework.beans.PropertyValues;
-import com.topsion.framework.beans.factory.config.BeanDefinition;
-import com.topsion.framework.beans.factory.config.ConstructorArgumentValue;
-import com.topsion.framework.beans.factory.config.ConstructorArgumentValues;
-import com.topsion.framework.beans.factory.config.SingletonBeanRegistry;
-import com.topsion.framework.beans.factory.support.DefaultSingletonBeanRegistry;
+import com.topsion.framework.beans.factory.BeanFactory;
+import com.topsion.framework.beans.factory.config.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -15,8 +12,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
-        implements BeanFactory, SingletonBeanRegistry {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
 
     private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap();
     private Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
@@ -238,8 +234,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
         this.removeSingleton(name);
     }
 
-    private void removeSingleton(String name) {
-
+    public void removeSingleton(String beanName) {
+        synchronized (this.singletonObjects) {
+            this.singletonObjects.remove(beanName);
+            this.beanNames.remove(beanName);
+        }
     }
 
     @Override
