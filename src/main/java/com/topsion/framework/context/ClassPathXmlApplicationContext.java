@@ -5,10 +5,12 @@ import com.topsion.framework.beans.factory.config.BeanDefinition;
 import com.topsion.framework.beans.factory.BeanFactory;
 import com.topsion.framework.beans.BeansException;
 import com.topsion.framework.beans.SimpleBeanFactory;
+import com.topsion.framework.beans.factory.config.BeanFactoryPostProcessor;
 import com.topsion.framework.beans.factory.xml.XmlBeanDefinitionReader;
 import com.topsion.framework.core.ClassPathXmlResource;
 import com.topsion.framework.core.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,12 +23,19 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
     private final boolean isRefresh;
     SimpleBeanFactory beanFactory;
 
+    private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors =
+            new ArrayList<BeanFactoryPostProcessor>();
+
+    public ClassPathXmlApplicationContext(String fileName) {
+        this(fileName, true);
+    }
+
     public ClassPathXmlApplicationContext(String fileName, boolean isRefresh) {
         this.isRefresh = isRefresh;
         Resource resource = new ClassPathXmlResource(fileName);
         AutowiredCapableBeanFactory autowiredCapableBeanFactory = new AutowiredCapableBeanFactory();
 //        this.beanFactory = new SimpleBeanFactory();
-        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(autowiredCapableBeanFactory);
         xmlBeanDefinitionReader.loadBeanDefinitions(resource);
         if (this.isRefresh) {
             this.beanFactory.refresh();
@@ -39,6 +48,25 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
     }
 
     @Override
+    public boolean containsBean(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isSingleton(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isPrototype(String name) {
+        return false;
+    }
+
+    @Override
+    public Class<?> getType(String name) {
+        return null;
+    }
+
     public void registerBean(BeanDefinition beanDefinition, Object obj) {
         this.beanFactory.registerBean(beanDefinition, null);
     }

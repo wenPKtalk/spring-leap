@@ -189,7 +189,6 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
         return containsSingleton(beanName);
     }
 
-    @Override
     public void registerBean(BeanDefinition beanDefinition, Object obj) {
         this.registerSingleton(beanDefinition.getId(), obj);
     }
